@@ -1,0 +1,37 @@
+class Solution {
+public:
+
+    void helper(int n, int depth, vector<vector<string>>& total, unordered_set<int>& cols, unordered_set<int>& diag1, unordered_set<int>& diag2, vector<string>& curr) {
+        if (depth >= n) {
+            total.push_back(curr);
+        }
+        for (int i = 0; i < n; i++) {
+            if (!diag1.contains(depth + i) && !diag2.contains(n - 1 - i + depth) && !cols.contains(i)) {
+                string temp = "";
+                for (int j = 0; j < i; j++) temp.append(".");
+                temp.append("Q");
+                while (temp.size() < n) temp.append(".");
+                diag1.insert(depth + i);
+                diag2.insert(n - 1 - i + depth);
+                cols.insert(i);
+                curr.push_back(temp);
+                helper(n, depth + 1, total, cols, diag1, diag2, curr);
+                curr.pop_back();
+                cols.erase(i);
+                diag2.erase(n - i - 1 + depth);
+                diag1.erase(depth + i);
+            }
+        }
+    }
+
+
+    vector<vector<string>> solveNQueens(int n) {
+        vector<vector<string>> total;
+        unordered_set<int> cols;
+        unordered_set<int> diag1;
+        unordered_set<int> diag2;
+        vector<string> curr;
+        helper(n, 0, total, cols, diag1, diag2, curr);
+        return total;
+    }
+};
